@@ -1,0 +1,43 @@
+= firehose-to-syslog Walkthrough 
+
+== Prerequisites
+
+* running PCF foundation
+* some syslog TCP endpoint
+
+== Steps
+
+. pull down the latest release of https://github.com/cloudfoundry-community/firehose-to-syslog[firehose to syslog]
+
+----
+curl -L -o firehose-to-syslog https://github.com/cloudfoundry-community/firehose-to-syslog/releases/download/5.1.0/firehose-to-syslog_linux_amd64
+chmod +x firehose-to-syslog
+----
+
+[start=2]
+. create a user for the app in UAA, this requires the https://github.com/cloudfoundry/cf-uaac[uaac] command line tool
+
+----
+uaac target https://uaa.[your cf system domain]
+uaac token client get admin -s [your admin-secret]
+uaac client add firehose-to-syslog \
+  --name firehose-to-syslog \
+  --secret [your_client_secret] \
+  --authorized_grant_types client_credentials,refresh_token \
+  --authorities doppler.firehose,cloud_controller.admin_read_only
+----
+
+[start=3]
+. target your system org and space in PCF
+
+----
+cf target -o system -s system
+----
+
+[start=4]
+. create a manifest with the right env vars for the app. a sample manifest can be found link:manifest-sample.yml[here]
+
+. push your app and watch the logs flow.
+
+----
+cf push --no-route

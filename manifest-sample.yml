@@ -1,0 +1,18 @@
+---
+applications:
+- name: firehose-to-syslog
+  health-check-type: process
+  command: ./firehose-to-syslog
+  buildpacks:
+    - binary_buildpack
+  env:
+    API_ENDPOINT: https://api.[your cf system domain]
+    DOPPLER_ENDPOINT: wss://doppler.[your cf system domain]:443
+    SYSLOG_ENDPOINT: [Your Syslog IP]:514
+    LOG_EVENT_TOTALS: true
+    LOG_EVENT_TOTALS_TIME: "10s"
+    SKIP_SSL_VALIDATION: true
+    FIREHOSE_SUBSCRIPTION_ID: firehose-to-syslog
+    FIREHOSE_CLIENT_ID:  [your doppler.firehose enabled client id]
+    FIREHOSE_CLIENT_SECRET:  [your doppler.firehose enabled client secret]
+    LOG_FORMATTER_TYPE: [Log formatter type to use. Valid options are : text, json, json-cee]
